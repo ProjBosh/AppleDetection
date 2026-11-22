@@ -1,11 +1,11 @@
 ~/IdeaProject/AppleDetection/
 │
-├── pom.xml                          # (или build.gradle) сборка apple-detector.jar
-├── README.md                        # запуск, признаки, метрики, ограничения, итоговое R
+├── pom.xml                                 # сборка apple-detector.jar (Java 21)
+├── README.md                               # запуск, признаки, метрики, ограничения, итоговое R
 │
-├── python/                          # вспомогательная подготовка данных
+├── python/                                 # вспомогательная подготовка данных
 │   ├── download_dataset.py
-│   └── metadata.csv                 # путь, класс, split (train/test)
+│   └── metadata.csv                        # путь, класс, split (train/test); Trainer создаёт его сам, если файла нет
 │
 ├── data/
 │   ├── apple/
@@ -15,33 +15,38 @@
 │       ├── other_001.jpg
 │       └── ...
 │
-├── models/                          # результат обучения (по одному на разбиение A1, A2, ...)
-│   ├── model_A1.json                # признаки, пороги, решающие границы
+├── models/                                 # результат обучения (по одному на разбиение A1, A2, ...)
+│   ├── model_A1.json                       # признаки, пороги, решающие границы
 │   └── model_A2.json
 │
-├── results/                         # результаты этапов 1, 2 и далее
+├── results/                                # результаты этапов 1, 2 и далее
 │   ├── A1_confusion_matrix.csv
 │   ├── A2_confusion_matrix.csv
-│   ├── gains_G.csv                  # выигрыши G, штрафы, ΔG
-│   └── R_summary.csv                # R⁽¹⁾, R⁽²⁾, ... и лучший вариант
+│   ├── gains_G.csv                         # выигрыши G, штрафы, ΔG
+│   └── R_summary.csv                       # R⁽¹⁾, R⁽²⁾, ... и лучший вариант
 │
 ├── src/
 │   ├── main/java/volsu/
-│   │   ├── Main.java                # CLI, разбор аргументов, коды возврата 0/1/2
-│   │   ├── ImageLoader.java         # ImageIO.read, масштабирование, обработка ошибок
-│   │   ├── FeatureExtractor.java    # RGB→HSV, доли цветов, округлость, соотношение сторон
-│   │   ├── Classifier.java          # решающее правило, вывод класса и уверенности
-│   │   ├── Trainer.java             # режим --train, подбор границ, сохранение модели
-│   │   ├── Evaluator.java           # accuracy, precision, recall, матрица ошибок
-│   │   ├── EfficiencyCriterion.java # расчёт R через G и штрафы
+│   │   ├── Main.java                       # CLI, разбор аргументов, коды возврата 0/1/2
+│   │   ├── ImageLoader.java                # ImageIO.read, масштабирование, обработка ошибок
+│   │   ├── FeatureExtractor.java           # RGB→HSV, доли цветов, округлость, соотношение сторон
+│   │   ├── Classifier.java                 # решающее правило, вывод класса и уверенности
+│   │   ├── Trainer.java                    # режим --train, подбор границ, сохранение модели
+│   │   ├── Evaluator.java                  # accuracy, precision, recall, матрица ошибок
+│   │   ├── EfficiencyCriterion.java        # расчёт R через G и штрафы
+│   │   ├── ImageNotFoundException.java     # файл не найден → код 1
+│   │   ├── NotAnImageException.java        # файл не изображение → код 1
+│   │   ├── ModelException.java             # ошибка модели → код 2
 │   │   └── model/
-│   │       ├── ClassPartition.java  # разбиения A1, A2 (классы ΩA1_1..3 → решения L)
-│   │       └── ModelConfig.java     # рабочий словарь признаков, границы, параметры
+│   │       ├── ClassPartition.java         # разбиения A1, A2 (классы ΩA1_1..3 → решения L)
+│   │       ├── ModelConfig.java            # рабочий словарь признаков, границы, параметры
+│   │       ├── Sample.java                 # образец выборки: файл, метка, split, признаки
+│   │       └── ConfusionMatrix.java        # матрица ошибок, бинарная матрица, CSV
 │   │
 │   └── test/java/volsu/
 │       ├── FeatureExtractorTest.java
 │       ├── ClassifierTest.java
 │       ├── EvaluatorTest.java
-│       └── EdgeCasesTest.java       # зелёное яблоко, помидор, красный шар, слабый свет
+│       └── EdgeCasesTest.java              # зелёное яблоко, помидор, красный шар, слабый свет
 │
-└── test_images/                     # несколько изображений для ручных проверок CLI
+└── test_images/                            # несколько изображений для ручных проверок CLI
