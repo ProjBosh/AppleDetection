@@ -1,0 +1,36 @@
+# Maven
+target/
+dependency-reduced-pom.xml
+pom.xml.tag
+pom.xml.releaseBackup
+
+# Java
+*.class
+*.jar
+*.war
+hs_err_pid*
+replay_pid*
+
+# IDE
+.idea/
+*.iml
+*.iws
+out/
+.vscode/
+.classpath
+.project
+.settings/
+
+# Python (вспомогательные скрипты)
+python/.venv/
+python/__pycache__/
+*.pyc
+
+# Данные (большие изображения; metadata.csv остаётся в репозитории)
+data/apple/
+data/other/
+
+# Логи и временные файлы
+*.log
+*.tmp
+.DS_Store
