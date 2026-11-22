@@ -1,4 +1,4 @@
-package model;
+package volsu.model;
 
 public class ModelConfig {
     // TODO: ModelConfig — рабочий словарь признаков, границы и параметры модели

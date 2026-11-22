@@ -1,3 +1,5 @@
+package volsu;
+
 public class ClassifierTest {
     // TODO: ClassifierTest — тесты решающего правила
     // TODO: testAppleClass() — типичные признаки яблока → «яблоко»

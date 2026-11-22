@@ -1,3 +1,5 @@
+package volsu;
+
 public class ImageLoader {
     // TODO: ImageLoader — загрузка и предобработка изображения
     // TODO: load(File file) — ImageIO.read, проверка существования и что файл является изображением

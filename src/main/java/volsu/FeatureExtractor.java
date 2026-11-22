@@ -1,3 +1,5 @@
+package volsu;
+
 public class FeatureExtractor {
     // TODO: FeatureExtractor — извлечение признаков рабочего словаря
     // TODO: extract(BufferedImage img) — вернуть вектор/Map признаков

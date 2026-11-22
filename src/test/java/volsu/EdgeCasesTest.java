@@ -1,3 +1,5 @@
+package volsu;
+
 public class EdgeCasesTest {
     // TODO: EdgeCasesTest — граничные случаи
     // TODO: testGreenApple() — зелёное яблоко → «яблоко»

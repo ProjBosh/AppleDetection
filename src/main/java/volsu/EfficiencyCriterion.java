@@ -1,3 +1,5 @@
+package volsu;
+
 public class EfficiencyCriterion {
     // TODO: EfficiencyCriterion — расчёт критерия эффективности R через G и штрафы
     // TODO: defineGains(...) — цены правильного распознавания «яблока» и «не яблока»

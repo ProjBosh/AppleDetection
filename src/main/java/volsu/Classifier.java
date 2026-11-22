@@ -1,3 +1,5 @@
+package volsu;
+
 public class Classifier {
     // TODO: Classifier — решающее правило и вывод класса с уверенностью
     // TODO: Classifier(ModelConfig config) — конструктор, загрузка границ и параметров

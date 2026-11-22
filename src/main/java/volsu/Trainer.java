@@ -1,3 +1,5 @@
+package volsu;
+
 public class Trainer {
     // TODO: Trainer — режим --train, подбор границ, сохранение модели
     // TODO: train(File dataDir, ClassPartition partition) — основной цикл обучения

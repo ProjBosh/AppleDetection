@@ -1,3 +1,5 @@
+package volsu;
+
 public class EvaluatorTest {
     // TODO: EvaluatorTest — тесты метрик
     // TODO: testConfusionMatrix() — на заранее известных предсказаниях

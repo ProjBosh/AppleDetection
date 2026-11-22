@@ -1,4 +1,4 @@
-package model;
+package volsu.model;
 
 public class ClassPartition {
     // TODO: ClassPartition — разбиения A1, A2, ... и соответствие классов решениям L

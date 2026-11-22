@@ -1,4 +1,6 @@
-public class FeatureEctractorTest {
+package volsu;
+
+public class FeatureExtractorTest {
     // TODO: FeatureExtractorTest — unit-тесты признаков
     // TODO: testRgbToHsv() — известные цвета (красный, зелёный, жёлтый, белый, чёрный)
     // TODO: testRedRatio() — полностью красное изображение → ≈ 1.0

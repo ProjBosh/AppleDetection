@@ -1,3 +1,5 @@
+package volsu;
+
 public class Evaluator {
     // TODO: Evaluator — метрики качества распознавания
     // TODO: evaluate(Classifier clf, List<Sample> testSet) — прогон по тестовой выборке
