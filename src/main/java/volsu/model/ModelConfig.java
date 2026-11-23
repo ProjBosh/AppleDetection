@@ -23,8 +23,10 @@ import java.util.Map;
  *   <li>«строгий» интервал — характерные значения яблока;</li>
  *   <li>«широкий» интервал — допустимые значения: выход за него означает «явно не яблоко».</li>
  * </ul>
- * Правило: все признаки в строгих интервалах → ΩA1_1 «яблоко»; хотя бы один признак вне
- * широкого интервала → ΩA1_2 «явно не яблоко»; иначе → ΩA1_3 «похоже на яблоко».
+ * Пусть s — число признаков в строгих интервалах, r — число признаков вне широких,
+ * a = {@code minStrictVotes}, b = {@code rejectVotes}. Правило: r ≥ b → ΩA1_2 «явно не яблоко»;
+ * иначе s ≥ a → ΩA1_1 «яблоко»; иначе → ΩA1_3 «похоже на яблоко».
+ * По умолчанию a = числу признаков, b = 1 (классическое правило «все признаки в строгих интервалах»).
  */
 public final class ModelConfig {
 
@@ -39,9 +41,12 @@ public final class ModelConfig {
     private final int resizeHeight;
     private final double unsureMinConfidence;
     private final double unsureMaxConfidence;
+    private final int minStrictVotes;
+    private final int rejectVotes;
 
     /**
-     * Создаёт модель с параметрами уверенности по умолчанию (0.3 … 0.5 для класса ΩA1_3).
+     * Создаёт модель с параметрами по умолчанию: уверенность 0.3 … 0.5 для класса ΩA1_3,
+     * правило «все признаки в строгих интервалах».
      *
      * @param partition    разбиение
      * @param featureNames имена признаков рабочего словаря
@@ -55,7 +60,8 @@ public final class ModelConfig {
     }
 
     /**
-     * Полный конструктор.
+     * Конструктор с параметрами уверенности и правилом по умолчанию
+     * (a = числу признаков, b = 1).
      *
      * @param version             версия формата
      * @param partition           разбиение
@@ -69,6 +75,28 @@ public final class ModelConfig {
     public ModelConfig(int version, ClassPartition partition, List<String> featureNames,
                        Map<String, double[]> thresholds, int resizeWidth, int resizeHeight,
                        double unsureMinConfidence, double unsureMaxConfidence) {
+        this(version, partition, featureNames, thresholds, resizeWidth, resizeHeight,
+                unsureMinConfidence, unsureMaxConfidence, featureNames.size(), 1);
+    }
+
+    /**
+     * Полный конструктор.
+     *
+     * @param version             версия формата
+     * @param partition           разбиение
+     * @param featureNames        имена признаков
+     * @param thresholds          границы по признакам
+     * @param resizeWidth         ширина масштабирования
+     * @param resizeHeight        высота масштабирования
+     * @param unsureMinConfidence минимальная уверенность для класса «похоже на яблоко»
+     * @param unsureMaxConfidence максимальная уверенность для класса «похоже на яблоко»
+     * @param minStrictVotes      минимальное число признаков в строгих интервалах для класса «яблоко»
+     * @param rejectVotes         число признаков вне широких интервалов, при котором объект «явно не яблоко»
+     */
+    public ModelConfig(int version, ClassPartition partition, List<String> featureNames,
+                       Map<String, double[]> thresholds, int resizeWidth, int resizeHeight,
+                       double unsureMinConfidence, double unsureMaxConfidence,
+                       int minStrictVotes, int rejectVotes) {
         this.version = version;
         this.partition = partition;
         this.featureNames = Collections.unmodifiableList(new ArrayList<>(featureNames));
@@ -81,6 +109,8 @@ public final class ModelConfig {
         this.resizeHeight = resizeHeight;
         this.unsureMinConfidence = unsureMinConfidence;
         this.unsureMaxConfidence = unsureMaxConfidence;
+        this.minStrictVotes = minStrictVotes;
+        this.rejectVotes = rejectVotes;
     }
 
     /**
@@ -92,7 +122,7 @@ public final class ModelConfig {
      */
     public ModelConfig withUnsureConfidence(double min, double max) {
         return new ModelConfig(version, partition, featureNames, thresholds,
-                resizeWidth, resizeHeight, min, max);
+                resizeWidth, resizeHeight, min, max, minStrictVotes, rejectVotes);
     }
 
     /**
@@ -168,6 +198,24 @@ public final class ModelConfig {
     }
 
     /**
+     * Минимальное число признаков в строгих интервалах для класса «яблоко».
+     *
+     * @return значение от 1 до числа признаков
+     */
+    public int getMinStrictVotes() {
+        return minStrictVotes;
+    }
+
+    /**
+     * Число признаков вне широких интервалов, при котором объект относится к «явно не яблоку».
+     *
+     * @return значение от 1 до числа признаков
+     */
+    public int getRejectVotes() {
+        return rejectVotes;
+    }
+
+    /**
      * Проверяет целостность модели: версию, непустоту словаря, известность признаков,
      * наличие и упорядоченность границ, корректность параметров.
      *
@@ -188,6 +236,13 @@ public final class ModelConfig {
         }
         if (!(unsureMinConfidence >= 0 && unsureMaxConfidence <= 1 && unsureMinConfidence <= unsureMaxConfidence)) {
             throw new ModelException("Некорректные параметры уверенности");
+        }
+        int n = featureNames.size();
+        if (minStrictVotes < 1 || minStrictVotes > n) {
+            throw new ModelException("Некорректное число признаков для класса «яблоко»: " + minStrictVotes);
+        }
+        if (rejectVotes < 1 || rejectVotes > n) {
+            throw new ModelException("Некорректное число признаков для отклонения: " + rejectVotes);
         }
         for (String f : featureNames) {
             if (!FeatureExtractor.featureNames().contains(f)) {
@@ -225,6 +280,8 @@ public final class ModelConfig {
         sb.append("  \"resizeHeight\": ").append(resizeHeight).append(",\n");
         sb.append("  \"unsureMinConfidence\": ").append(unsureMinConfidence).append(",\n");
         sb.append("  \"unsureMaxConfidence\": ").append(unsureMaxConfidence).append(",\n");
+        sb.append("  \"minStrictVotes\": ").append(minStrictVotes).append(",\n");
+        sb.append("  \"rejectVotes\": ").append(rejectVotes).append(",\n");
         sb.append("  \"featureNames\": ").append(stringArray(featureNames)).append(",\n");
         sb.append("  \"thresholds\": {\n");
         int i = 0;
@@ -240,7 +297,8 @@ public final class ModelConfig {
     }
 
     /**
-     * Строит модель из JSON и проверяет её целостность.
+     * Строит модель из JSON и проверяет её целостность. Поля {@code minStrictVotes} и
+     * {@code rejectVotes} необязательны (для моделей старого формата берутся значения по умолчанию).
      *
      * @param json текст JSON
      * @return модель
@@ -270,11 +328,16 @@ public final class ModelConfig {
             for (Map.Entry<?, ?> e : thMap.entrySet()) {
                 th.put((String) e.getKey(), dblArr(e.getValue()));
             }
+            int strictVotes = m.get("minStrictVotes") != null
+                    ? ((Number) m.get("minStrictVotes")).intValue() : features.size();
+            int rejectVotes = m.get("rejectVotes") != null
+                    ? ((Number) m.get("rejectVotes")).intValue() : 1;
             cfg = new ModelConfig(((Number) req(m, "version")).intValue(), partition, features, th,
                     ((Number) req(m, "resizeWidth")).intValue(),
                     ((Number) req(m, "resizeHeight")).intValue(),
                     ((Number) req(m, "unsureMinConfidence")).doubleValue(),
-                    ((Number) req(m, "unsureMaxConfidence")).doubleValue());
+                    ((Number) req(m, "unsureMaxConfidence")).doubleValue(),
+                    strictVotes, rejectVotes);
         } catch (ClassCastException | IllegalArgumentException e) {
             throw new ModelException("Структура модели повреждена: " + e.getMessage(), e);
         }
