@@ -46,8 +46,21 @@ public class FeatureExtractor {
     private static final int IDX_HIST = 11;
 
     static {
-        List<String> n = new ArrayList<>(List.of("redRatio", "greenRatio", "yellowRatio", "colorDominance",
-                "meanHue", "meanSaturation", "meanValue", "roundness", "aspectRatio", "elongation", "texture"));
+        List<String> n = new ArrayList<>(
+                            List.of(
+                                "redRatio",
+                                "greenRatio",
+                                "yellowRatio",
+                                "colorDominance",
+                                "meanHue",
+                                "meanSaturation",
+                                "meanValue",
+                                "roundness",
+                                "aspectRatio",
+                                "elongation",
+                                "texture"
+                            )
+        );
         for (int i = 0; i < HIST_BINS; i++) {
             n.add("brightnessHist" + i);
         }
