@@ -50,11 +50,15 @@ public final class Main {
     private static final String RESULTS_DIR = "results";
     private static final double LOW_CONFIDENCE = 0.55;
     private static final long TIME_LIMIT_NANOS = 1_000_000_000L;
-    private static final Set<String> OPTIONS_WITH_VALUE =
-            Set.of("--image", "--model", "--train", "--out", "--evaluate", "--criterion", "--partition");
-
-    private Main() {
-    }
+    private static final Set<String> OPTIONS_WITH_VALUE = Set.of(
+        "--image",
+        "--model",
+        "--train",
+        "--out",
+        "--evaluate",
+        "--criterion",
+        "--partition"
+    );
 
     /**
      * Точка входа: перехватывает исключения и завершает работу через {@code System.exit(код)}.
@@ -86,6 +90,7 @@ public final class Main {
                         } else if (!command.isEmpty()) {
                             parseCommands(command);
                         }
+                        System.out.println("---\n");
                     }
                 }
                 System.out.println("The end!");
@@ -139,6 +144,8 @@ public final class Main {
                 return EXIT_INPUT_ERROR;
             }
         }
+
+        // Обработка опций
         if (help) {
             printUsage();
             return EXIT_OK;
