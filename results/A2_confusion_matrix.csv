@@ -1,0 +1,8 @@
+true\predicted,ΩA1_1 яблоко,ΩA1_2 явно не яблоко
+decision,l1,l2
+apple,16,51
+other,14,53
+metric,accuracy,0.514925
+metric,precision,0.533333
+metric,recall,0.238806
+metric,probabilityCorrect,0.514925

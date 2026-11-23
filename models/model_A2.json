@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "partitionName": "A2",
+  "classNames": ["ΩA1_1 яблоко", "ΩA1_2 явно не яблоко"],
+  "decisions": [0, 1],
+  "baseToLocal": [0, 1, 0],
+  "resizeWidth": 256,
+  "resizeHeight": 256,
+  "unsureMinConfidence": 0.3,
+  "unsureMaxConfidence": 0.5,
+  "minStrictVotes": 4,
+  "rejectVotes": 1,
+  "featureNames": ["elongation", "brightnessHist3", "greenRatio", "roundness"],
+  "thresholds": {
+    "elongation": [1.0, 1.3333333333333333, 1.0, 1.3333333333333333],
+    "brightnessHist3": [0.0, 0.20649888780381953, 0.0, 0.20649888780381953],
+    "greenRatio": [0.0, 0.040166605750487326, 0.0, 0.040166605750487326],
+    "roundness": [0.22502068708510578, 0.6380790075488052, 0.22502068708510578, 0.6380790075488052]
+  }
+}
